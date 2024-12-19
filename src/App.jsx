@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import TaskList from "./TaskList";
 import TaskForm from "./TaskForm";
+import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";   
 
 const initialTasks = [
   { ID: 1, task: "Organize your workspace" },
@@ -15,14 +17,8 @@ const initialTasks = [
 ];
 
 export default function App() {
-  const [tasks, setTasks] = useState(initialTasks);
-  const [isCheck, setIsChecked] = useState({});
-
-  // const sortedTasks = [...tasks].sort((a, b) => {
-  //   const aChecked = isCheck[a.ID] || false;
-  //   const bChecked = isCheck[b.ID] || false;
-  //   return aChecked - bChecked;
-  // });
+  const [tasks, setTasks] = useState(initialTasks)
+  const [isCheck, setIsChecked] = useState({})
 
   const handleAddTask = (newTask) => {
     const newTaskObject = {
@@ -30,6 +26,7 @@ export default function App() {
       task: newTask,
     };
     setTasks([newTaskObject, ...tasks]);
+    toast.success("Task added successfully!")
   };
 
   const handleCheckChange = (id) => {
@@ -40,16 +37,15 @@ export default function App() {
   };
 
   const handleDeleteTask = (ID) => {
-    setTasks(tasks.filter((task) => task.ID !== ID));
+    setTasks(tasks.filter((task) => task.ID !== ID))
+    toast.success("Task deleted successfully!")
   };
 
   const handleDeleteSelected = () => {
-    let result = confirm("Want to delete the completed task ?");
-    if (result) {
       const uncheckedTasks = tasks.filter((task) => !isCheck[task.ID]);
       setTasks(uncheckedTasks);
       setIsChecked({});
-    }
+      toast.success("Completed tasks deleted!")
   };
 
   const handleEditTask = (id, newText) => {
@@ -58,11 +54,14 @@ export default function App() {
         task.ID === id ? { ...task, task: newText } : task
       )
     );
+    toast.success("Task edited successfully!")
   };
 
   return (
     <div className="w-[400px] h-[700px] top-11 mx-auto p-4 border rounded-lg shadow-md bg-white">
-      <h1 className="text-2xl font-bold mb-4 text-white text-center bg-blue-800 ">Tasker</h1>
+      <h1 className="text-2xl font-bold mb-4 text-white text-center bg-blue-800">
+        Tasker
+      </h1>
       <TaskForm
         onAddTask={handleAddTask}
         onDeleteSelected={handleDeleteSelected}
@@ -71,13 +70,25 @@ export default function App() {
       <hr className="my-4" />
       <TaskList
         tasks={tasks}
-        // tasks={sortedTasks}
         isCheck={isCheck}
         onCheckChange={handleCheckChange}
         onDeleteTask={handleDeleteTask}
         onEditTask={handleEditTask}
       />
+      <ToastContainer
+        style={{width:350}}
+        position="bottom-center"
+        autoClose={3000} 
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" 
+      />
     </div>
   );
 }
-  
+
